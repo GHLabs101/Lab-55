@@ -1,0 +1,39 @@
+name: Lab 55 - Step Debug Demo
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Baseline context
+        run: |
+          echo "EVENT=${{ github.event_name }}"
+          echo "REF=${{ github.ref }}"
+          echo "RUN_ID=${{ github.run_id }}"
+          echo "RUN_NUMBER=${{ github.run_number }}"
+
+      - name: Grouped sample work
+        run: |
+          echo "::group::Simulated build"
+          echo "Start build at $(date -u)"
+          for i in 1 2 3; do
+            echo "Work unit $i"
+            sleep 1
+          done
+          echo "End build at $(date -u)"
+          echo "::endgroup::"
+
+      - name: Verbose shell (local baseline)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          echo "Showing command traces locally (baseline without step debug)."
+          echo "HOME is $HOME"
+          uname -a
